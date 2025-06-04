@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cancellation Prediction</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Booking Cancellation Predictor</h1>
+        <p class="quote">
+          “It is not magic or random guessing. It's just normal logistic
+          regression.”
+        </p>
+      </header>
+
+      <form id="bookingForm">
+        <div class="form-columns">
+          <div class="column">
+            <label
+              >Hotel:
+              <select name="hotel">
+                <option value="City Hotel">City Hotel</option>
+                <option value="Resort Hotel">Resort Hotel</option>
+              </select>
+            </label>
+            <label
+              >Lead Time:
+              <input
+                type="number"
+                name="lead_time"
+                min="0"
+                max="500"
+                value="30"
+              />
+            </label>
+            <label
+              >Weekend Nights:
+              <input
+                type="number"
+                name="stays_in_weekend_nights"
+                min="0"
+                max="10"
+                value="1"
+              />
+            </label>
+            <label
+              >Week Nights:
+              <input
+                type="number"
+                name="stays_in_week_nights"
+                min="0"
+                max="20"
+                value="3"
+              />
+            </label>
+            <label
+              >Adults:
+              <input type="number" name="adults" min="1" max="10" value="2" />
+            </label>
+          </div>
+
+          <div class="column">
+            <label
+              >Children:
+              <input type="number" name="children" min="0" max="10" value="0" />
+            </label>
+            <label
+              >Babies:
+              <input type="number" name="babies" min="0" max="5" value="0" />
+            </label>
+            <label
+              >Repeated Guest:
+              <select name="is_repeated_guest">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </label>
+            <label
+              >Previous Cancellations:
+              <input
+                type="number"
+                name="previous_cancellations"
+                min="0"
+                max="10"
+                value="0"
+              />
+            </label>
+            <label
+              >Special Requests:
+              <input
+                type="number"
+                name="total_of_special_requests"
+                min="0"
+                max="5"
+                value="0"
+              />
+            </label>
+          </div>
+
+          <div class="column">
+            <label
+              >Booking Difficulty Score:
+              <input
+                type="range"
+                name="booking_difficulty_score"
+                min="-5"
+                max="5"
+                step="0.1"
+                value="0"
+              />
+            </label>
+            <label
+              >Estimated Check-In Duration (min):
+              <input
+                type="range"
+                name="estimated_check_in_duration"
+                min="0"
+                max="120"
+                step="1"
+                value="20"
+              />
+            </label>
+            <button type="submit">Predict</button>
+          </div>
+        </div>
+      </form>
+
+      <div id="result"></div>
+
+      <footer>
+        <p>Created by <strong>Yevheniia Rudenko</strong></p>
+      </footer>
+    </div>
+
+    <script src="final_project/script.js"></script>
+  </body>
+</html>
