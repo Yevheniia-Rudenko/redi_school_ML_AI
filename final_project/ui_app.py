@@ -1,11 +1,14 @@
+# ui_app.py
+
 import streamlit as st
-import numpy as np
 import pandas as pd
+import numpy as np
 import joblib
 
-# Load the model and scaler
-model = joblib.load("/Users/yevrud/redi_school_ML_AI/final_project/rf_model.pkl")
-scaler = joblib.load("/Users/yevrud/redi_school_ML_AI/final_project/scaler.pkl")
+# Загружаем модель, scaler и названия фичей
+model, scaler, feature_names = joblib.load(
+    "/Users/yevrud/redi_school_ML_AI/final_project/rf_model.pkl"
+)
 
 st.set_page_config(page_title="Hotel Booking Cancellation Predictor", layout="centered")
 st.title("🏨 Hotel Booking Cancellation Predictor")
@@ -26,51 +29,50 @@ deposit_type = st.selectbox("Deposit type", ["No Deposit", "Non Refund", "Refund
 booking_changes = st.slider("Booking changes", 0, 5, 0)
 special_requests = st.slider("Number of special requests", 0, 5, 0)
 
-# Encode deposit type
-deposit_map = {"No Deposit": 0, "Non Refund": 1, "Refundable": 2}
-deposit_encoded = deposit_map[deposit_type]
+# One-hot encode deposit type
+deposit_dummies = pd.get_dummies([deposit_type], prefix="deposit_type")
+for col in [
+    "deposit_type_No Deposit",
+    "deposit_type_Non Refund",
+    "deposit_type_Refundable",
+]:
+    if col not in deposit_dummies.columns:
+        deposit_dummies[col] = 0
 
-# Prepare input data
-input_features = pd.DataFrame(
-    [
-        [
-            lead_time,
-            stays_weekend,
-            stays_week,
-            adults,
-            children,
-            is_repeated_guest,
-            previous_cancellations,
-            deposit_encoded,
-            booking_changes,
-            special_requests,
-        ]
-    ],
-    columns=[
-        "lead_time",
-        "stays_in_weekend_nights",
-        "stays_in_week_nights",
-        "adults",
-        "children",
-        "is_repeated_guest",
-        "previous_cancellations",
-        "deposit_type",
-        "booking_changes",
-        "total_of_special_requests",
-    ],
+# Основные признаки
+main_features = pd.DataFrame(
+    {
+        "lead_time": [lead_time],
+        "stays_in_weekend_nights": [stays_weekend],
+        "stays_in_week_nights": [stays_week],
+        "adults": [adults],
+        "children": [children],
+        "is_repeated_guest": [is_repeated_guest],
+        "previous_cancellations": [previous_cancellations],
+        "booking_changes": [booking_changes],
+        "total_of_special_requests": [special_requests],
+    }
 )
 
-# Pad missing features if needed
-n_model_features = model.n_features_in_
-while input_features.shape[1] < n_model_features:
-    input_features[f"missing_{input_features.shape[1]}"] = 0
+# Объединяем всё
+input_df = pd.concat([main_features, deposit_dummies], axis=1)
 
-# Scale and predict
-input_scaled = scaler.transform(input_features)
+# Добавляем отсутствующие признаки
+for col in feature_names:
+    if col not in input_df.columns:
+        input_df[col] = 0
+
+# Упорядочим колонки
+input_df = input_df[feature_names]
+
+# Масштабируем
+input_scaled = scaler.transform(input_df)
+
+# Предсказание
 prediction = model.predict(input_scaled)[0]
 probability = model.predict_proba(input_scaled)[0][1]
 
-# Show result
+# Результат
 st.markdown("---")
 st.subheader("Prediction Result")
 
