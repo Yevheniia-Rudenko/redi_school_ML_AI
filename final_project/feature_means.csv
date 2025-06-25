@@ -1,7 +1,6 @@
 Feature,Mean
-is_canceled,0.4268811341330425
 lead_time,116.28720363696678
-arrival_date_year,26.803162486368592
+arrival_date_year,2017.0
 arrival_date_week_number,2016.213985823337
 arrival_date_day_of_month,15.70962377317339
 stays_in_weekend_nights,0.9931272893829967
@@ -19,7 +18,6 @@ days_in_waiting_list,0.11378051311646473
 adr,100.43723974557321
 required_car_parking_spaces,0.0
 total_of_special_requests,0.6013904034896401
-id,60426.38129770992
 booking_difficulty_score,1.0046283463688694
 total_nights,3.3404611079028323
 total_guests,2.0
@@ -27,7 +25,7 @@ adr_per_person,50.218619872786604
 cancellation_ratio_prev_bookings,0.0
 is_direct_booking,0.0
 hotel_Resort Hotel,0.2985823336968375
-arrival_date_month_August,0.11401308615049073
+arrival_date_month_August,0.13525081788440568
 arrival_date_month_December,0.05054525627044711
 arrival_date_month_February,0.06060523446019629
 arrival_date_month_January,0.021128680479825517
@@ -38,7 +36,6 @@ arrival_date_month_May,0.10956924754634678
 arrival_date_month_November,0.0495092693565976
 arrival_date_month_October,0.08511450381679389
 arrival_date_month_September,0.09010359869138496
-arrival_date_month_Veganuary,0.02123773173391494
 meal_FB,0.005316248636859324
 meal_HB,0.09427480916030534
 meal_MISSING,0.06060523446019629
