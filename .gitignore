@@ -5,3 +5,4 @@ final_project/lr_model.pkl
 final_project/rf_model.pkl
 final_project/scaler.pkl
 final_project/xgb_model.pkl
+final_project/*.pkl
