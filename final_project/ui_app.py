@@ -4,13 +4,15 @@ import numpy as np
 import joblib
 import os
 
+# === Streamlit config ===
 st.set_page_config(page_title="🏖️ Hotel Booking Cancellation Predictor", layout="wide")
 
-# === Load model components ===
+# === Paths to model and feature means ===
 model_path = "/Users/yevrud/redi_school_ML_AI/final_project/rf_model.pkl"
 means_path = "/Users/yevrud/redi_school_ML_AI/final_project/feature_means.csv"
 
 
+# === Caching loading functions ===
 @st.cache_resource
 def load_model():
     return joblib.load(model_path)
@@ -22,12 +24,11 @@ def load_feature_means():
     return df.set_index("Feature")["Mean"].to_dict()
 
 
-# Load model, scaler, features
+# === Load model, scaler, feature names, and feature means ===
 model, scaler, feature_names = load_model()
 feature_means = load_feature_means()
 
-# === Streamlit UI ===
-
+# === UI ===
 st.title("🌴 Hotel Booking Cancellation Predictor")
 st.subheader("🏨 Let's check if your booking is **safe or at risk**!")
 
@@ -66,31 +67,36 @@ if submitted:
             }
         )
 
-        deposit_dummies = pd.get_dummies([deposit_type], prefix="deposit_type")
-        for col in [
+        # Handle deposit_type one-hot encoding
+        expected_deposit_cols = [
             "deposit_type_No Deposit",
             "deposit_type_Non Refund",
             "deposit_type_Refundable",
-        ]:
-            if col not in deposit_dummies.columns:
-                deposit_dummies[col] = 0
+        ]
+        deposit_dummies = pd.get_dummies([deposit_type], prefix="deposit_type")
+        deposit_dummies = deposit_dummies.reindex(
+            columns=expected_deposit_cols, fill_value=0
+        )
 
+        # Combine with input features
         input_df = pd.concat([input_df, deposit_dummies], axis=1)
 
-        # Fill missing features
+        # Fill missing features with mean values
         for col in feature_names:
             if col not in input_df.columns:
                 input_df[col] = feature_means.get(col, 0)
 
-        input_df = input_df[feature_names]
+        input_df = input_df[feature_names]  # Ensure correct order
 
         # Scale and predict
         input_scaled = scaler.transform(input_df)
         prediction = model.predict(input_scaled)[0]
         probability = model.predict_proba(input_scaled)[0][1]
 
+        # Adjusted probability with offset
         adjusted_probability = max(min(probability - 0.10, 1.0), 0.0)
 
+        # Display result
         if adjusted_probability > 0.5:
             color = "#d9534f"
             message = "⚠️ High risk of cancellation."
@@ -110,14 +116,17 @@ if submitted:
                     {message}
                 </p>
             </div>
-            """,
+        """,
             unsafe_allow_html=True,
         )
 
-        # Save results
+        # Save result to CSV
         if booking_id:
             result_df = pd.DataFrame(
-                {"id": [booking_id], "is_canceled": [int(adjusted_probability >= 0.5)]}
+                {
+                    "id": [booking_id],
+                    "is_canceled": [int(adjusted_probability >= 0.5)],
+                }
             )
             if os.path.exists("submission_results.csv"):
                 result_df.to_csv(
