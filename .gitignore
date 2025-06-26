@@ -6,3 +6,4 @@ final_project/rf_model.pkl
 final_project/scaler.pkl
 final_project/xgb_model.pkl
 final_project/*.pkl
+/Users/yevrud/redi_school_ML_AI/final_project/pkl_files
